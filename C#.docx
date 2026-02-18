@@ -1,0 +1,1910 @@
+
+1. Classes and Objects
+
+A class is a blueprint for creating objects.
+An object is an instance of a class.
+
+The .NET Framework is a software development framework developed by Microsoft that provides a runtime environment(A runtime environment is a software layer that provides the necessary services and infrastructure for a program to run and interact with the system after it has been compiled.) and a set of libraries and tools for building and running applications on Windows operating systems. The .NET framework is primarily used on Windows, while .NET Core (which evolved into just .NET starting from version 5) is cross-platform. The framework supports multiple programming languages, such as C#, F#, and VB.NET, and supports a range of application types, including desktop, web, mobile, cloud, and gaming applications.
+
+https://media.geeksforgeeks.org/wp-content/uploads/net-framework-components.jpg
+Common Language Runtime 
+The Common Language Runtime (CLR) is a component of the Microsoft .NET Framework that manages the execution of .NET applications. It is responsible for loading and executing the code written in various .NET programming languages, including C#, VB.NET, F#, and others.
+When a C# program is compiled, the resulting executable code is in an intermediate language called Common Intermediate Language (CIL) or Microsoft Intermediate Language (MSIL). This code is not machine-specific, and it can run on any platform that has the CLR installed. When the CIL code is executed, the CLR compiles it into machine code that can be executed by the processor.
+2. .NET Framework Class Library (FCL): The .NET Framework Class Library (FCL) is a vast collection of pre-built functions and classes available to developers. The FCL provides a range of namespaces that contain classes for tasks like:
+
+File I/O
+Networking
+Database access
+Graphical User Interface (GUI) designn
+
+Namespace	Purpose
+System	Core types like String, Int32, Console
+System.IO	File and stream handling
+System.Net	Networking and web requests
+System.Data	Database access (ADO.NET)
+System.Drawing	Graphics and imaging
+System.Windows.Forms	GUI development (Windows Forms)
+System.Xml	XML parsing and manipulation
+System.Threading	Multithreading and parallelism
+System.Collections	Data structures like lists, dictionaries
+System.Text	Text encoding and string manipulation
+
+Common Language Specification (CLS): It defines common rules so that code written in different languages can interoperate.
+
+Managed Code: The MSIL code which is managed by the CLR is known as the Managed Code. For managed code CLR provides three .NET facilities: 
+Unmanaged Code: Before .NET development, programming languages like.COM Components & Win32 API do not generate the MSIL code. So these are not managed by CLR rather managed by Operating System.
+
+Use common data types (like int, string, not sbyte).
+Avoid confusing names (don’t use MyClass and myclass together).
+Handle errors properly (use System.Exception).
+Expose only safe features to other languages.
+
+Common Type System (CTS): It ensures that types are consistent across different languages within the .NET ecosystem.
+
+Example: int in C# is the same as Integer in VB.NET — both map to System.Int32 in CTS.
+
+Common Intermediate Language (CIL): This is a low-level language that is compiled from source code and later converted into machine code by the JIT compiler.
+JIT Converts MSIL (Microsoft Intermediate Language) code into native machine code at runtime.
+
+When you compile a .NET application, it is first compiled into MSIL.
+At runtime, the CLR (Common Language Runtime) uses the JIT compiler to convert MSIL into native code specific to the operating system and CPU.
+This native code is then executed.
+Types of JIT in .NET:
+🔹 Normal JIT
+
+When: Used by default in most .NET applications.
+Why: Compiles methods only when called, saving time and memory upfront.
+Best for: General-purpose apps where flexibility and runtime optimization are needed.
+
+
+🔹 Econo JIT
+
+When: Used in older, memory-constrained environments (e.g., mobile or embedded systems).
+Why: Minimizes memory usage by avoiding caching compiled code.
+When a method is compiled by Normal JIT, the compiled native code is stored (cached) in memory so it can be reused if the method is called again. This improves performance but uses more memory.
+In contrast, Econo JIT:
+
+Does not cache the compiled code.
+So, every time a method is called, it is recompiled.
+This saves memory but makes execution slower.
+
+Best for: Legacy systems with limited resources (now deprecated).
+
+
+🔹 Pre-JIT
+
+When: Used during application installation via Ngen.exe.
+Why: Compiles all code ahead of time to improve startup performance.
+Best for: Large or performance-critical apps (e.g., enterprise or server apps).
+Assemblies package compiled code (.dll or .exe) so it can be easily deployed and reused across applications.
+Assemblies package compiled code (.dll or .exe) so it can be easily deployed and reused across applications.
+
+ GC (Garbage Collection) in .NET
+Purpose: Automatically manages memory by reclaiming unused objects.
+How it works:
+
+The CLR tracks object references.
+When an object is no longer referenced, it's marked for collection.
+The Garbage Collector runs periodically to free memory occupied by these objects.
+🔹 Generation 0 (Gen 0)
+
+Contains: Short-lived objects.
+Examples: Temporary variables, method-local objects.
+Collection Frequency: Very frequent.
+Trigger: When Gen 0 is full, GC runs to clean it.
+🔹 Generation 1 (Gen 1)
+
+Contains: Objects that survived Gen 0 collection.
+Purpose: Acts as a buffer between short-lived and long-lived objects.
+Collection Frequency: Less frequent than Gen 0.
+🔹 Generation 2 (Gen 2)
+
+Contains: Long-lived objects.
+Examples: Static data, objects stored in caches.
+Collection Frequency: Least frequent.
+Trigger: When memory pressure is high or Gen 2 is full.
+
+
+🔄 How GC Works with Generations
+Here’s a step-by-step breakdown:
+
+Object Allocation:New objects are allocated in Gen 0.
+If Gen 0 fills up, a GC cycle is triggered.
+GC Cycle:GC checks for unreachable objects in Gen 0.
+Surviving objects are promoted to Gen 1.
+If Gen 1 fills up, GC checks Gen 1 and promotes survivors to Gen 2.
+Promotion:Objects that survive multiple GC cycles are promoted to higher generations.
+This reduces the cost of checking long-lived objects frequently.
+Finalization:GC also handles finalizers for objects that implement IDisposable or have destructors. (Generally The Garbage Collector (GC) in .NET is responsible for cleaning up memory used by objects that are no longer needed. But some objects use unmanaged resources (like file handles, database connections, etc.) that need manual cleanup.)
+We Use IDisposable but also Gc helps to prevent memory leak
+A finalizer is a special method (~ClassName()) that runs automatically before the object is destroyed by the GC.
+It’s used as a backup to release unmanaged resources if Dispose() wasn’t called.
+
+Assemblies package compiled code (.dll or .exe) so it can be easily deployed and reused across applications.
+Benefits of C# 12 Features in .NET 8
+In C# 12, a primary constructor is a new way to define constructors directly in the class or struct declaration. It simplifies how you initialize objects by allowing you to declare constructor parameters at the top of the class, and then use them throughout the class.
+
+public class Person(string name, int age)
+{
+    public void Introduce()
+    {
+        Console.WriteLine($"Hi, I'm {name} and I'm {age} years old.");
+    }
+}
+
+
+Collection Expressions
+A new unified syntax [ … ] simplifies the initialization of collections such as arrays, lists, and spans. The spread operator (..) can include elements from other collections.
+
+int[] a = [1, 2];
+int[] b = [3, 4];
+int[] combined = [..a, ..b, 5]; // Result: [1, 2, 3, 4, 5]
+
+
+The [InlineArray(n)] attribute tells the compiler to treat a struct as if it contains an array of n elements of a specified type, without actually using a managed array. This avoids heap allocations and improves performance.
+
+using System.Runtime.CompilerServices;
+
+[InlineArray(4)]
+public struct MyVector4
+{
+    private int _element0; // The compiler will generate _element1, _element2, _element3
+}
+
+var vec = new MyVector4();
+vec[0] = 10;
+vec[1] = 20;
+Console.WriteLine(vec[1]); // Outputs: 20
+
+
+
+lambda expressions can now have default parameter values
+
+var greet = (string name, string greeting = "Hello") =>
+{
+    Console.WriteLine($"{greeting}, {name}!");
+};
+
+greet("John");                    // Output: Hello, John!
+greet("Jane", "Good morning");    // Output: Good morning, Jane!
+
+
+
+ref readonly parameters was introduced to allow method parameters to be passed by reference without allowing modification, improving performance and safety.
+
+public readonly struct LargeStruct
+{
+    public int A;
+    public int B;
+}
+
+public void Process(ref readonly LargeStruct data)
+{
+    Console.WriteLine(data.A + data.B);
+    // data.A = 10; ❌ Error: Cannot modify because it's readonly
+}
+
+
+
+
+
+An alias is just a nickname or shortcut for something that has a longer or more complex name.
+
+
+🧠 Example from real life:
+Imagine your full name is Siddhartha Vanka, but your friends call you Sid.
+Here, Sid is an alias for Siddhartha Vanka.
+
+namespace CSharp12NewFeatures
+{
+/allies
+    using IntList = System.Collections.Generic.List<int>;
+
+    public class Program
+    {
+        static void Main()
+        {
+            IntList numbers = new IntList { 1, 2, 3, 4 };
+            Console.WriteLine(string.Join(", ", numbers));
+        }
+    }
+}
+
+
+
+In C#, the ExperimentalAttribute is a custom attribute that developers can use to mark APIs (classes, methods, properties, etc.) as experimental. This is a way to signal that the API is not yet stable, may change in future versions, or is intended for testing purposes only.
+
+[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = false)]
+public sealed class ExperimentalAttribute : Attribute
+{
+    public string Message { get; }
+
+    public ExperimentalAttribute(string message = "This API is experimental and may change.")
+    {
+        Message = message;
+    }
+}
+
+
+
+
+
+An interceptor is like a middleman that sits between the caller and the method. It can:
+
+Log the method call
+Check permissions
+Modify inputs or outputs
+Handle errors
+
+public class LoggingInterceptor : IInterceptor
+{
+    public void Intercept(IInvocation invocation)
+    {
+        Console.WriteLine($"Calling: {invocation.Method.Name}");
+        invocation.Proceed(); // Run the actual method
+        Console.WriteLine($"Finished: {invocation.Method.Name}");
+    }
+}
+
+
+
+
+
+
+var proxyGenerator = new ProxyGenerator();
+var calculator = proxyGenerator.CreateClassProxy(new LoggingInterceptor());
+
+int result = calculator.Add(5, 3);
+// Output:
+// Calling: Add
+// Finished: Add
+
+
+
+
+
+A namespace in programming—especially in languages like C# or .NET—is like a container that helps organize your code and avoid name conflicts.
+
+namespace Vehicles {
+    class Car {
+        public void Drive() {
+            Console.WriteLine("Driving a car");
+        }
+    }
+}
+
+namespace Animals {
+    class Car {
+        public void Move() {
+            Console.WriteLine("This is not a vehicle!");
+        }
+    }
+}
+
+Vehicles.Car myCar = new Vehicles.Car();
+Animals.Car myAnimalCar = new Animals.Car();
+
+
+
+
+
+
+Run in cmd is u can csc file.name then file
+
+
+public class GFG {
+    static public void Main () 
+    {
+          int x;
+    }
+}
+
+
+
+Here the total number of identifiers present in the above example is 3 and the names of these identifiers are:  
+
+GFG: Name of the class
+Main: Method name
+x: Variable name
+
+Aspect	Description
+Allowed Characters	The only allowed characters for identifiers are all alphanumeric characters([A-Z], [a-z], [0-9]), '_' (underscore).
+
+For example, "geek@" is not a valid C# identifier as it contain '@' – special character.
+Starting Character	Identifiers should not start with digits([0-9]).
+
+For example, "123geeks" is not valid in the C# identifier.
+No Whitespaces	Identifiers must not contain whitespace characters.
+Keywords	Identifiers are not allowed to use as keywords unless they include @ as a prefix.
+
+For example, @as is a valid identifier, but "as" is not because it is a keyword.
+Unicode Support	C# identifiers allow Unicode Characters.
+Case - Sensitivity	C# identifiers are case-sensitive.
+Length Restriction	C# identifiers cannot contain more than 512 characters.
+No Double Underscores	Identifiers do not contain two consecutive underscores in their name because such types of identifiers are used for the implementation.
+
+
+A variable name is a type of identifier specifically used to name a variable.
+It's a subset of identifiers.
+1️⃣ Compile-Time Initialization
+
+Value is assigned when writing the code.
+Happens before the program runs.
+If no value is given, the compiler may assign a default value (like 0 for integers).
+✅ Example:
+
+
+
+If you declare a class-level variable without assigning a value:
+
+
+
+2️⃣ Run-Time Initialization
+
+Value is assigned while the program is running.
+Often comes from user input, function calls, or calculations.
+✅ Example:
+
+// Run Time Initialization
+using System;
+
+class Geeks 
+{  
+    // Main Method
+    public static void Main(String []args)
+    {       
+        // Value will be taken from user 
+        // input and assigned to variable
+        // num
+        int num = Convert.ToInt32(Console.ReadLine());
+
+        // printing the result
+        Console.WriteLine("Value of num is " + num);
+    }
+}
+
+
+
+C# Data Types
+data type defines the kind of data a variable can store
+Value Data Types
+In C#, the Value Data Types will directly store the variable value in memory and it will also accept both signed and unsigned literals.
+
+using System; // System namespace for basic functionalities
+
+class Geeks 
+{
+    int y; // int: stores integer values
+
+    public static void Main(String[] args) // String[]: array of strings for command-line arguments
+    {
+        int x = 32; // int: stores integer values
+
+        Console.WriteLine("Value of x is " + x); // Output the value of x
+
+        Geeks gfg = new Geeks(); // Geeks: user-defined class type
+
+        Console.WriteLine("Value of y is " + gfg.y); // Output the value of y
+    }
+}
+
+
+
+
+
+Alias	Type Name	Type	Size(bits)	Range	Default Value
+sbyte	System.Sbyte	signed integer	8	-128 to 127	0
+short	System.Int16	signed integer	16	-32768 to 32767	0
+Int	System.Int32	signed integer	32	-231 to 231-1	0
+long	System.Int64	signed integer	64	-263 to 263-1	0L
+byte	System.byte	unsigned integer	8	0 to 255	0
+ushort	System.UInt16	unsigned integer	16	0 to 65535	0
+uint	System.UInt32	unsigned integer	32	0 to 232	0
+ulong	System.UInt64	unsigned integer	64	0 to 263	0
+
+The Reference Data Types will contain a memory address of variable value because the reference types won’t store the variable value directly in memory. When you create a reference type variable, such as an object or a string, you are actually storing a reference (or pointer) to the location in memory where the data is held. The actual data for reference types is stored on the heap. The heap is a large pool of memory used for dynamic memory allocation. The built-in reference types are string, object.
+🔷 2. Reference Data Types
+✅ What Are Reference Types?
+Reference types do not store the actual data directly. Instead, they store a reference (or memory address) pointing to the location in the heap where the actual data is stored.
+Stack
+
+A fast, memory-efficient region used for short-lived data.
+Stores:Value types (like int, bool, char, struct) directly.
+References to reference types, not the actual object.
+Automatically cleaned up when a method ends.
+🔹 Heap
+
+Used for long-lived objects and reference types.
+Stores:The actual data of reference types (like class, string, arrays).
+Managed by the Garbage Collector.
+
+✅ Characteristics:
+
+Can be null (i.e., not pointing to any object).
+Multiple variables can point to the same object.
+Changes made through one reference affect all references to that object.
+
+
+🔷 2.1 string (System.String)
+✅ Description:
+
+A string is a sequence of Unicode characters.
+It is a reference type, but behaves like a value type because it is immutable.
+string is an alias for System.String.
+
+string s1 = "hello";     // using alias
+String s2 = "welcome";   // using .NET type name
+
+
+In C#, when we say "strings are immutable", it means that once a string object is created, it cannot be changed. Any operation that seems to modify a string actually creates a new string object in memory.
+
+
+🔷 What Does Immutable Mean?
+
+Immutable = Cannot be changed after creation.
+When you modify a string (e.g., add characters, replace text), C# creates a new string and assigns it to the variable.
+The original string remains unchanged in memory until it's garbage collected.
+
+
+🔷 2.2 object (System.Object)
+✅ Description:
+
+object is the base class for all types in C#.
+Every type (value or reference) can be treated as an object.
+Useful for generic programming and type abstraction.
+✅ Boxing and Unboxing:
+
+Boxing: Converting a value type to an object.
+Unboxing: Extracting the value type from an object.
+
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int num = 42;              // Value type
+        object boxed = num;        // Boxing
+
+        Console.WriteLine("Boxed value: " + boxed);
+
+        int unboxed = (int)boxed;  // Unboxing
+        Console.WriteLine("Unboxed value: " + unboxed);
+    }
+}
+
+
+🔷 3. Pointer Data Types
+✅ What Are Pointers?
+Pointers store the memory address of another variable. They are used in unsafe code blocks for low-level memory manipulation.
+✅ Operators:
+
+& (Address-of): Gets the memory address of a variable.
+* (Dereference): Accesses the value at a memory adder
+
+unsafe {
+    int n = 10;
+    int* p = &n;
+    Console.WriteLine("Value: {0}", n);
+    Console.WriteLine("Address: {0}", (int)p);
+}
+
+
+
+Type	Stored On	Holds	Example
+int, float	Stack	Actual value	int x = 10;
+string	Stack + Heap	Reference → Heap	string s = "Hi";
+object	Stack + Heap	Reference → Heap	object o = 5;
+Pointer	Stack	Address of value	int* p = &x;
+
+
+The variable name is stored on the stack.
+The actual string "Siddhartha" is stored on the heap.
+The stack holds a reference (memory address) pointing to the heap.
+
+Data Type	Size (in bytes)	Description
+byte	1	Unsigned 8-bit integer (0 to 255)
+sbyte	1	Signed 8-bit integer (-128 to 127)
+short	2	Signed 16-bit integer
+ushort	2	Unsigned 16-bit integer
+int	4	Signed 32-bit integer
+uint	4	Unsigned 32-bit integer
+long	8	Signed 64-bit integer
+ulong	8	Unsigned 64-bit integer
+float	4	32-bit single-precision floating point
+double	8	64-bit double-precision floating point
+decimal	16	128-bit precise decimal values
+char	2	Unicode character
+bool	1 (logical)	Boolean value (true or false)
+string	Varies	Sequence of char values (UTF-16)
+object	Varies	Base type of all types in .NET
+DateTime	8	Date and time representation
+
+ Type Inference with var and new()
+type inference allows the compiler to determine the type of a variable based on the value assigned to it.
+
+var number = 10;           // int
+var name = "Siddhartha";   // string
+var list = new List<int>(); // List<int>
+
+
+
+
+new() Expression
+
+List numbers = new();       // Compiler infers List
+Dictionary map = new(); // Inferred as Dictionary
+
+
+
+
+
+Conditional statements if else same 
+switch
+
+char grade = 'B';
+
+switch (grade)
+{
+    case 'A':
+        Console.WriteLine("Excellent!");
+        break;
+    case 'B':
+        Console.WriteLine("Good job!");
+        break;
+    case 'C':
+        Console.WriteLine("Keep trying!");
+        break;
+    default:
+        Console.WriteLine("Invalid grade");
+        break;
+}
+
+
+
+
+
+List Patterns
+
+int[] numbers = { 1, 2, 3 };
+
+string result = numbers switch
+{
+    [1, 2, 3] => "Exact match",
+    [1, ..] => "Starts with 1",
+    [.., 3] => "Ends with 3",
+    _ => "Any list"
+};
+
+
+🔹 2. Span Patterns
+You can use pattern matching with Span<T> and ReadOnlySpan<T>.
+
+ReadOnlySpan span = new int[] { 10, 20, 30 };
+
+string result = span switch
+{
+    [10, ..] => "Starts with 10",
+    [.., 30] => "Ends with 30",
+    _ => "Other"
+};
+
+
+
+
+
+🔹 3. Improved Property Patterns
+You can match nested properties more cleanly.
+
+Person person = new Person { Name = "Siddhartha", Address = new Address { City = "Hyderabad" } };
+
+string result = person switch
+{
+    { Address.City: "Hyderabad" } => "Lives in Hyderabad",
+    _ => "Lives elsewhere"
+};
+
+
+
+
+
+ 4. Relational Patterns with Conditions
+
+object input = 42;
+
+string result = input switch
+{
+    int i when i > 0 => "Positive integer",
+    int i when i < 0 => "Negative integer",
+    string s => $"It's a string: {s}",
+    _ => "Unknown type"
+};
+
+
+
+
+
+C# Jump Statements (Break, Continue, Goto, Return and Throw) - GeeksforGeeks
+1. Defining and Calling Methods
+A method is a block of code that performs a specific task. You define it using a return type, method name, and parameters (if any
+
+void Greet()
+{
+    Console.WriteLine("Hello!");
+}
+
+// Calling the method
+Greet();
+
+
+
+
+
+2. Parameters: in, out, ref
+
+in: Passes the parameter by reference but read-only.
+ref: Passes the parameter by reference, allowing modification.
+out: Must be assigned inside the method before returning; used to return multiple values.
+
+void ModifyRef(ref int x)
+{
+    x += 10;
+}
+
+void SetOut(out int y)
+{
+    y = 100;
+}
+
+void ReadIn(in int z)
+{
+    Console.WriteLine(z); // Cannot modify z
+}
+
+int y=0;
+
+
+
+
+
+
+in out 
+
+void GetUserInfo(out string name, out int age)
+{
+    name = "Siddhartha";  // Must be assigned before return
+    age = 25;             // Must be assigned before return
+}
+
+string userName;
+int userAge;
+GetUserInfo(out userName, out userAge);
+Console.WriteLine($"Name: {userName}, Age: {userAge}");
+
+
+
+
+
+3. Default Parameter Values
+You can assign default values to parameters so they become optional during method calls.
+
+void PrintMessage(string message = "Default Message")
+{
+    Console.WriteLine(message);
+}
+
+PrintMessage(); // Outputs: Default Message
+
+
+
+4. Method Overloading
+
+void Show(int x)
+{
+    Console.WriteLine("Int: " + x);
+}
+
+void Show(string s)
+{
+    Console.WriteLine("String: " + s);
+}
+
+
+
+
+
+5. Local Functions
+Functions defined inside another method. Useful for encapsulating logic.
+
+void OuterMethod()
+{
+    void InnerMethod()
+    {
+        Console.WriteLine("Inside local function");
+    }
+
+    InnerMethod();
+}
+
+
+
+
+
+1. Classes and Objects
+
+A class is a blueprint for creating objects.
+An object is an instance of a class.
+
+public class Car
+{
+    public string Model;
+    public int Year;
+
+    public void Drive()
+    {
+        Console.WriteLine($"{Model} is driving.");
+    }
+}
+
+// Creating an object
+Car myCar = new Car();
+myCar.Model = "Toyota";
+myCar.Year = 2022;
+myCar.Drive();
+
+
+
+
+
+2. Constructors
+Constructors initialize objects. They have the same name as the class and no return type.
+
+Modifier	Accessible Within	Usage
+public	Anywhere in the project or other projects that reference it	Used for members that should be universally accessible
+private	Only within the containing class or struct	Default for class members; used to encapsulate data
+protected	Within the containing class and derived classes	Useful for inheritance scenarios
+internal	Anywhere within the same assembly (project)	Used to hide implementation details from other assemblies
+protected internal	Within the same assembly or derived classes in other assemblies	Combines protected and internal access
+private protected	Within the containing class or derived classes in the same assembly	More restrictive than protected internal
+
+1. Auto-Implemented Properties
+Auto-implemented properties simplify property declarations when no additional logic is required in the getter or setter.
+
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+
+2. Init-Only Setters
+Introduced in C# 9, init allows properties to be set only during object initialization, promoting immutability
+
+public class Person
+{
+    public string Name { get; init; }
+    public int Age { get; init; }
+}
+
+
+
+var person = new Person { Name = "Alice", Age = 30 };
+// person.Name = "Bob"; // ❌ Error: Cannot assign to 'Name' because it is an init-only property
+
+
+
+
+
+A record is a reference type (like a class), but it behaves more like a value type (like a struct) in terms of equality. That means two record instances are considered equal if all their properties are equal, not just if they reference the same object in memory.
+Value-Based Equality
+
+With classes: equality is based on reference (memory address).
+With records: equality is based on the values of the properties.
+
+public record Person(string FirstName, string LastName);
+
+var p1 = new Person("John", "Doe");
+var p2 = new Person("John", "Doe");
+
+Console.WriteLine(p1 == p2); // True, because values match
+
+
+
+
+
+mmutability by Default
+
+Records are often used with init-only properties, making them immutable after creation.
+3. Concise Syntax (Positional Records)
+Positional records allow you to define a record and its properties in a single line, making your code cleaner and more readable.
+
+public record Point(int X, int Y);
+
+
+This line:
+
+Declares a record named Point.
+Automatically creates two properties: X and Y.
+Generates a constructor, ToString(), Equals(), and GetHashCode() methods.
+🔍 Behind the scenes:
+The compiler expands it to something like:
+
+public record Point
+{
+    public int X { get; init; }
+    public int Y { get; init; }
+
+    public Point(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+}
+
+
+
+
+
+4. With-Expressions
+The with expression lets you create a copy of a record with some properties changed, while keeping the rest the same. This is especially useful for immutable types.
+
+var original = new Point(3, 4);
+var modified = original with { X = 10 };
+
+
+
+original remains unchanged.
+modified is a new Point with X = 10 and Y = 4.
+This is a clean way to update data without mutating the original object.
+5. Deconstruction Support
+Records support deconstruction, which means you can break them down into their individual components easily.
+
+var point = new Point(5, 6);
+var (x, y) = point;
+Console.WriteLine($"X: {x}, Y: {y}");
+
+
+🔹 What is a Backing Field?
+A backing field is a hidden variable that stores the actual data for a property in a class.
+
+public class Person
+{
+    private string _name; // This is the backing field
+
+    public string Name
+    {
+        get { return _name; }
+        set { _name = value; }
+    }
+}
+
+
+im c# no need to write it automatically done
+
+public string Name { get; set; }
+
+
+
+The base keyword in C# is used inside a derived class to refer to members of its base class. It allows you to:
+
+Call a base class constructor
+Access base class methods, properties, or fields that are overridden or hidden
+🔸 1. Calling Base Class Constructor
+When a derived class needs to pass parameters to the base class constructor, you use base(...) in the derived class constructor.
+
+public class Animal
+{
+    public string Name;
+
+    public Animal(string name)
+    {
+        Name = name;
+    }
+}
+
+public class Dog : Animal
+{
+    public Dog(string name) : base(name) // Calls Animal constructor
+    {
+    }
+}
+
+
+🔸 2. Accessing Base Class Members
+You can use base.MethodName() or base.PropertyName to access members of the base class, especially when they are overridden in the derived class.
+
+public class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal speaks.");
+    }
+}
+      
+public class Dog : Animal
+{
+    public override void Speak()
+    {
+        base.Speak(); // Calls Animal's Speak method
+        Console.WriteLine("Dog barks.");
+    }
+}
+
+
+
+
+
+🔸 3. Accessing Hidden Members
+If a derived class hides a member of the base class using the new keyword, you can still access the original member using base.
+
+public class Animal
+{
+    public void Info()
+    {
+        Console.WriteLine("This is an animal.");
+    }
+}
+
+public class Dog : Animal
+{
+    public new void Info()
+    {
+        Console.WriteLine("This is a dog.");
+        base.Info(); // Calls Animal's Info method
+    }
+}
+
+
+
+
+
+2. Overriding Methods and virtual / override Keywords
+To allow a method in a base class to be overridden in a derived class, you mark it with the virtual keyword. Then, in the derived class, you use override to provide a new implementation.
+
+public class Animal
+{
+    public virtual void Speak()
+    {
+        Console.WriteLine("Animal speaks.");
+    }
+}
+
+public class Dog : Animal
+{
+    public override void Speak()
+    {
+        Console.WriteLine("Dog barks.");
+    }
+}
+
+
+
+
+
+
+virtual: Marks a method as overridable.
+override: Replaces the base class method with a new implementation in the derived class.
+3. Abstract Classes and Interfaces
+🔸 Abstract Classes
+
+Cannot be instantiated.
+Can contain abstract methods (no implementation) and concrete methods (with implementation).
+Used when you want to provide a base class with some shared logic and enforce implementation of certain methods.
+
+public abstract class Shape
+{
+    public abstract double Area(); // must be implemented by derived classes
+}
+
+public class Circle : Shape
+{
+    public double Radius { get; set; }
+
+    public Circle(double radius)
+    {
+        Radius = radius;
+    }
+
+    public override double Area()
+    {
+        return Math.PI * Radius * Radius;
+    }
+}
+
+
+
+
+
+An interface in C# is a contract that defines a set of methods, properties, events, or indexers that a class or struct must implement. It does not contain implementation (except for default methods introduced in C# 8.0).
+Key Characteristics
+
+Defines behavior without specifying how it's implemented.
+Cannot be instantiated directly.
+Supports multiple inheritance (a class can implement multiple interfaces).
+Used for abstraction and polymorphism.
+
+public interface IAnimal
+{
+    void Speak();
+    string Name { get; set; }
+}
+
+
+
+public class Dog : IAnimal
+{
+    public string Name { get; set; }
+
+    public void Speak()
+    {
+        Console.WriteLine($"{Name} barks.");
+    }
+}
+
+
+
+
+
+In C#, value equality means two objects are considered equal if their contents are the same, not just their references. This is especially important for immutable types, where the state of an object cannot change after it's created.
+
+Type	Description
+Reference Equality	object.ReferenceEquals(obj1, obj2) returns true only if both refer to the same object.
+Value Equality	obj1.Equals(obj2) returns true if the contents of the objects are the same.
+
+
+public record Person(string Name, int Age);
+
+var p1 = new Person("Siddhartha", 25);
+var p2 = new Person("Siddhartha", 25);
+
+Console.WriteLine(p1 == p2);           // True (value equality)
+
+
+
+
+
+
+public struct Point
+{
+    public int X, Y;
+}
+
+var a = new Point { X = 1, Y = 2 };
+var b = new Point { X = 1, Y = 2 };
+
+Console.WriteLine(a.Equals(b));        // True
+
+
+
+
+
+1. With-expressions for structs
+Now you can use with on structs just like records:
+
+public struct Point(int X, int Y);
+var p1 = new Point(1, 2);
+var p2 = p1 with { X = 3 };
+
+
+
+2. Primary constructors for structs
+You can now define constructors directly in the struct declaration:
+
+public struct Rectangle(int Width, int Height);
+
+
+
+
+
+
+Feature	Struct	Record
+Type	Value type	Reference type
+Memory Allocation	Stored on the stack (usually)	Stored on the heap
+Equality	Default is value equality	Implements value equality by default
+Immutability	Can be made immutable manually	Immutable by default (especially positional records)
+Inheritance	Cannot inherit from another struct	Can inherit from another record
+Performance	More efficient for small data structures	Less efficient due to heap allocation
+Use Case	Lightweight data containers (e.g., Point)	Data models with identity and immutability
+With-expressions	Supported in C# 12	Supported since C# 9
+Primary Constructors	Supported in C# 12	Supported since C# 9
+Default ToString()	Must be overridden manually	Auto-generated with property names and values
+Mutability	Mutable by default	Immutable by default
+
+🔹 try-catch-finally Blocks
+This is the fundamental structure for handling exceptions in C#.
+
+try
+{
+    // Code that might throw an exception
+}
+catch (ExceptionType ex)
+{
+    // Handle the exception
+}
+finally
+{
+    // Code that always runs, regardless of exception
+}
+
+
+
+
+
+🔹 Custom Exceptions
+You can define your own exception types by inheriting from Exception.
+
+public class InvalidAgeException : Exception
+{
+    public InvalidAgeException(string message) : base(message) { }
+}
+
+
+
+
+
+🔹 Exception Filters and the when Clause
+Introduced in C# 6, the when clause allows you to filter exceptions based on conditions.
+
+try
+{
+    // Risky code
+}
+catch (Exception ex) when (ex.Message.Contains("specific"))
+{
+    // Handle only if condition is true
+}
+
+
+
+
+
+🧪 Example Combining All Concepts
+
+public class InvalidScoreException : Exception
+{
+    public InvalidScoreException(string message) : base(message) { }
+}
+
+public void ProcessScore(int score)
+{
+    try
+    {
+        if (score < 0 || score > 100)
+            throw new InvalidScoreException("Score must be between 0 and 100.");
+        
+        Console.WriteLine("Score is valid.");
+    }
+    catch (InvalidScoreException ex) when (score < 0)
+    {
+        Console.WriteLine("Score is too low: " + ex.Message);
+    }
+    catch (InvalidScoreException ex)
+    {
+        Console.WriteLine("Invalid score: " + ex.Message);
+    }
+    finally
+    {
+        Console.WriteLine("Score processing complete.");
+    }
+}
+
+
+
+
+
+✅ 1. Handling Null References in C#
+Null references can lead to runtime exceptions (NullReferenceException). C# provides several operators to handle them safely:
+✅ 2. Null-Conditional Operator (?.)
+This operator allows you to safely access members or methods of an object that might be null.
+string? name = person?.Name;
+
+
+
+✅ 3. Null-Coalescing Operator (??)
+Provides a fallback value if the left-hand operand is null.
+string name = person?.Name ?? "Unknown";
+
+ 4. Null-Coalescing Assignment (??=)
+Assigns a value only if the variable is null.
+name ??= "Default Name";
+
+5. Required Modifier in C# 12
+Introduced in C# 11, but widely adopted in C# 12, the required modifier ensures that certain properties must be initialized during object creation.
+
+public class Person
+{
+    public required string Name { get; set; }
+    public int Age { get; set; }
+}
+
+
+
+
+✅ Summary Table
+
+Feature	Purpose	Syntax Example
+Null-Conditional (?.)	Safe member access	person?.Name
+Null-Coalescing (??)	Fallback value	person?.Name ?? "Unknown"
+Null-Coalescing Assignment (??=)	Assign if null	name ??= "Default"
+Required Modifier	Enforce property initialization	public required string Name { get; set; }
+
+1. List
+A List<T> is a dynamic array that can grow or shrink.
+
+List fruits = new List { "Apple", "Banana", "Cherry" };
+fruits.Add("Date");
+
+
+🔹 2. Dictionary
+A Dictionary<TKey, TValue> stores key-value pairs
+
+Dictionary students = new Dictionary();
+students.Add(1, "Alice");
+students.Add(2, "Bob");
+
+
+🔹 3. Queue
+A Queue<T> follows FIFO (First In, First Out).
+
+Queue tasks = new Queue();
+tasks.Enqueue("Task1");
+tasks.Enqueue("Task2");
+string nextTask = tasks.Dequeue(); // "Task1"
+
+
+ 4. Stack
+A Stack<T> follows LIFO (Last In, First Out).
+
+Stack history = new Stack();
+history.Push("Page1");
+history.Push("Page2");
+string lastPage = history.Pop(); // "Page2"
+
+
+🔹 5. Iterating Collections using foreach
+
+foreach (string fruit in fruits)
+{
+    Console.WriteLine(fruit);
+}
+
+
+🔍 High-Level Overview
+A Dictionary<TKey, TValue> in .NET is implemented using a hash table. Here's how it works under the hood:
+1. Hashing the Key
+
+When you add a key-value pair, the key is passed through a hash function.
+This generates a hash code (an integer) that determines where the value will be stored.
+2. Buckets and Entries
+
+The dictionary maintains an array of buckets.
+Each bucket points to a linked list of entries (or a single entry if there's no collision).
+Each entry contains:The key
+The value
+The hash code
+A pointer to the next entry (if there's a collision)
+3. Handling Collisions
+
+If two keys produce the same hash code (collision), the dictionary uses chaining:It stores both entries in the same bucket using a linked list.
+4. Resizing
+
+When the number of entries exceeds a certain threshold (based on load factor), the dictionary resizes:It creates a larger array of buckets.
+Rehashes all existing keys to redistribute them.
+✅ Creating Tuples
+Tuples are used to group multiple values together.
+var person = ("Siddhartha", 25); // Tuple with
+
+✅ Deconstructing Tuples
+You can extract values from a tuple like this:
+
+(string name, int age) = person;
+Console.WriteLine($"Name: {name}, Age: {age}");
+
+
+🔹 2. Pattern Matching with is and switch Enhancements
+✅ is Pattern Matching
+
+object obj = 42;
+
+if (obj is int number)
+{
+    Console.WriteLine($"It's an int: {number}");
+}
+
+
+✅ switch Enhancements
+
+object shape = new Circle(5);
+
+switch (shape)
+{
+    case Circle c:
+        Console.WriteLine($"Circle with radius {c.Radius}");
+        break;
+    case Rectangle r when r.Width == r.Height:
+        Console.WriteLine("Square");
+        break;
+    default:
+        Console.WriteLine("Unknown shape");
+        break;
+}
+
+
+
+
+
+3. List Patterns in C# 12
+
+int[] numbers = { 1, 2, 3 };
+
+if (numbers is [1, 2, 3])
+{
+    Console.WriteLine("Exact match!");
+}
+
+
+
+if (numbers is [1, ..])
+{
+    Console.WriteLine("Starts with 1");
+}
+
+
+
+
+
+
+[1, ..] means the list starts with 1 and has any number of elements after.
+[.., 3] means it ends with 3.
+✅ What is a Task?
+A Task represents an operation that runs asynchronously
+
+Task GetNumberAsync()
+{
+    return Task.FromResult(42);
+}
+
+
+✅ Using async and await
+
+async Task GetDataAsync()
+{
+    await Task.Delay(1000); // Simulates a delay
+    return "Hello, Siddhartha!";
+}
+
+
+🔹 2. Exception Handling in Async Code
+You handle exceptions in async methods just like in regular code — using try/catch.
+
+async Task FetchDataAsync()
+{
+    try
+    {
+        await Task.Delay(500);
+        throw new Exception("Something went wrong!");
+    }
+    catch (Exception ex)
+    {
+        return $"Error: {ex.Message}";
+    }
+}
+
+
+
+
+
+🔹 3. ValueTask vs Task in .NET 8
+✅ What is ValueTask?
+ValueTask<T> is a lightweight alternative to Task<T> that avoids heap allocation when the result is already available.
+
+ValueTask GetFastResultAsync()
+{
+    return new ValueTask(100); // No async work, just return
+}
+
+
+
+
+
+
+Feature	Task	ValueTask
+Allocation	Always allocates	Avoids allocation if result is ready
+Use case	General async	Performance-critical, short-lived tasks
+.NET 8 support	Stable	Improved and optimized
+
+
+async Task UseDataAsync()
+{
+    try
+    {
+        string result = await GetDataAsync();
+        Console.WriteLine(result);
+    }
+    catch (InvalidOperationException ex)
+    {
+        Console.WriteLine($"Caught exception: {ex.Message}");
+    }
+}
+
+
+
+
+
+Reading and Writing files
+
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string path = "example.txt";
+        string content = "Hello, Siddhartha! This is a test.";
+
+        File.WriteAllText(path, content);
+    }
+}
+
+
+
+
+
+Example using StreamWriter:
+
+
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        using (StreamWriter writer = new StreamWriter("example.txt"))
+        {
+            writer.WriteLine("Line 1");
+            writer.WriteLine("Line 2");
+        }
+    }
+}
+
+
+
+
+
+✅ Reading from a File
+
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string path = "example.txt";
+        string content = File.ReadAllText(path);
+
+        Console.WriteLine(content);
+    }
+}
+
+
+
+
+
+Example using StreamReader:
+
+
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        using (StreamReader reader = new StreamReader("example.txt"))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                Console.WriteLine(line);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+File.WriteAllText(path, content) — writes all text at once.
+File.ReadAllText(path) — reads all text at once.
+File.AppendAllText(path, content) — appends text.
+
+These are stream classes that give more control over how data is read or written, especially useful for large files or line-by-line operations.
+
+
+
+StreamWriter — writes data to a file as a stream.
+StreamReader — reads data from a file as a stream.
+If the file does not exist, it creates the file.
+If the file exists, it will:Overwrite the file by default.
+Or append to the file if you specify append: true.
+
+using (StreamWriter writer = new StreamWriter("example.txt", append: true))
+{
+    writer.WriteLine("This line will be added at the end.");
+}
+
+
+
+
+
+
+Action	Tool	File Exists?	Behavior
+Write	StreamWriter	❌ No	Creates the file
+Write	StreamWriter	✅ Yes	Overwrites or appends (your choice)
+Read	StreamReader	❌ No	❌ Throws FileNotFoundException
+Read	StreamReader	✅ Yes	Reads the file
+
+Serialization is the process of converting an object into a format that can be stored or transmitted — in this case, JSON (JavaScript Object Notation).
+Deserialization is the reverse: converting JSON data back into a C# object.
+
+using System;
+using System.Text.Json;
+
+class Program
+{
+    static void Main()
+    {
+        Person person = new Person { Name = "Siddhartha", Age = 25 };
+
+        string jsonString = JsonSerializer.Serialize(person);
+        Console.WriteLine(jsonString); // Output: {"Name":"Siddhartha","Age":25}
+    }
+}
+
+
+
+
+
+
+using System;
+using System.Text.Json;
+
+class Program
+{
+    static void Main()
+    {
+        string json = "{\"Name\":\"Laptop\",\"Price\":799.99,\"InStock\":true}";
+
+        Product product = JsonSerializer.Deserialize(json);
+
+        Console.WriteLine($"Name: {product.Name}");
+        Console.WriteLine($"Price: {product.Price}");
+        Console.WriteLine($"In Stock: {product.InStock}");
+    }
+}
+
+
+
+
+
+Multithreading is a programming concept that allows multiple threads to run concurrently within a single process. It’s commonly used to improve the performance of applications, especially those that perform multiple tasks simultaneously or need to remain responsive while doing heavy work in the background.
+🔧 What is a Thread?
+A thread is the smallest unit of execution in a program. Every program has at least one thread (the main thread), and multithreading allows you to create additional threads to perform tasks in parallel.
+
+
+🧠 Why Use Multithreading?
+Here are some key benefits:
+
+Improved performance: Tasks can run in parallel, making better use of CPU cores.
+Responsiveness: UI applications (like desktop or mobile apps) stay responsive while performing background tasks.
+Efficient resource use: Threads share the same memory space, making communication between them faster than between processes.
+🔍 Importance of Multithreading
+Multithreading is crucial in modern software development for several reasons:
+1. Better CPU Utilization
+Multithreading allows programs to make full use of multi-core processors by running multiple threads in parallel, increasing efficiency.
+2. Improved Application Responsiveness
+In GUI-based applications (like desktop or mobile apps), multithreading ensures that the user interface remains responsive while background tasks (like file downloads or data processing) run in separate threads.
+3. Faster Execution
+Tasks that can be performed independently (e.g., downloading multiple files, processing large datasets) can be executed simultaneously, reducing overall execution time.
+4. Simplified Program Structure
+Instead of writing complex state machines or event loops, developers can use threads to handle tasks concurrently, making code easier to manage and understand.
+5. Real-Time Processing
+Multithreading is essential in real-time systems (e.g., robotics, gaming, simulations) where multiple operations must occur simultaneously without delay.
+
+
+🧵 What Are Multithreaded Applications?
+Multithreaded applications are programs that use multiple threads to perform tasks concurrently. These threads share the same memory space but execute independently.
+🔧 Examples of Multithreaded Applications:
+
+Web Browsers: Handle rendering, downloading, and user input in separate threads.
+Servers: Handle multiple client requests simultaneously.
+Games: Use threads for rendering graphics, processing input, and running physics simulations.
+Media Players: Play audio/video while allowing user interaction and buffering in the background.
+IDE (Integrated Development Environments): Compile code, provide suggestions, and respond to user input concurrently.
+A process in computing is an instance of a program that is being executed. It includes the program code and its current activity, such as the values of variables, the program counter, and the contents of memory.
+🧵 System.Threading Namespace (in .NET)
+The System.Threading namespace in .NET provides classes and interfaces that enable multithreaded programming. It allows developers to create and manage threads, synchronize thread execution, and handle concurrency.
+Key Features:
+
+Creating and managing threads
+Synchronization primitives (like Mutex, Monitor, Semaphore)
+Thread pooling
+Task scheduling (via Task in System.Threading.Tasks)
+
+
+🧵 System.Threading.Thread Class
+The Thread class represents a single thread of execution. It allows you to create, start, pause, and stop threads manually.
+
+using System;
+using System.Threading;
+
+class Program
+{
+    static void PrintNumbers()
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            Console.WriteLine(i);
+            Thread.Sleep(1000); // Pause for 1 second
+        }
+    }
+
+    static void Main()
+    {
+        Thread t = new Thread(PrintNumbers);
+        t.Start(); // Starts the new thread
+        Console.WriteLine("Main thread continues...");
+    }
+}
+
+
+
+
+
+🧵 System.Threading.Thread Class (C# / .NET)
+The Thread class in the System.Threading namespace is used to create and manage threads manually.
+🔧 Key Properties & Methods:
+
+Start(): Begins execution of the thread.
+Sleep(int milliseconds): Pauses the thread for a specified time.
+Join(): Blocks the calling thread until the thread terminates.
+IsAlive: Checks if the thread is still running.
+Priority: Sets the thread's priority level.
+Abort(): (Obsolete) Attempts to stop the thread
+🔄 Life Cycle Stages:
+
+UnstartedThe thread is created but not yet started.
+Code: Thread t = new Thread(MyMethod);
+RunningThe thread starts executing.
+Code: t.Start();
+WaitSleepJoinThe thread is paused due to:Thread.Sleep()
+Thread.Join() (waiting for another thread to finish)
+Waiting on a synchronization object
+Suspended (Obsolete)The thread is paused using Suspend() (not recommended anymore due to deadlock risks).
+Stopped / Aborted / DeadThe thread has finished execution or was aborted.
+Code: Thread ends naturally or t.Abort() (also obsolete).
+
+.
+
+using System;
+using System.Threading;
+
+class ThreadLifeCycleDemo
+{
+    static void MyMethod()
+    {
+        Console.WriteLine("Thread is running...");
+        Thread.Sleep(2000); // Thread enters WaitSleepJoin state
+        Console.WriteLine("Thread is finishing...");
+    }
+
+    static void Main()
+    {
+        Thread t = new Thread(MyMethod); // Unstarted
+        t.Start(); // Running
+        t.Join();  // Main thread waits for t to finish
+        Console.WriteLine("Thread has completed.");
+    }
+}
+
+
+
+
+
+🧵 1. Obtaining Current Thread Information
+You can get details about the currently executing thread using:
+
+Thread currentThread = Thread.CurrentThread;
+Console.WriteLine($"Thread ID: {currentThread.ManagedThreadId}");
+Console.WriteLine($"Is Background: {currentThread.IsBackground}");
+Console.WriteLine($"Thread State: {currentThread.ThreadState}");
+
+
+
+
+🧵 2. Thread Creation
+Threads are created using the Thread class:
+
+Thread t = new Thread(() => Console.WriteLine("Hello from thread!"));
+t.Start();
+
+
+🔄 What is a Background Thread?
+In C#, a background thread is a thread that runs behind the scenes and does not prevent the application from terminating. When all foreground threads finish execution, the application ends—even if background threads are still running.
+
+Thread backgroundThread = new Thread(() => Console.WriteLine("Background thread"));
+backgroundThread.IsBackground = true;
+backgroundThread.Start();
+
+
+
+
+
+A race condition occurs when two or more threads access shared data at the same time, and the final outcome depends on the timing or order of their execution. This can lead to unpredictable behavior or data corruption if proper synchronization is not used.
+
+int counter = 0;
+Thread t1 = new Thread(() => counter++);
+Thread t2 = new Thread(() => counter++);
+t1.Start();
+t2.Start();
+
+
+A deadlock occurs when two or more threads are waiting indefinitely for each other to release resources, and none of them can proceed. This typically happens when threads acquire multiple locks in different orders, leading to a circular wait.
+
+object lockA = new object();
+object lockB = new object();
+
+Thread t1 = new Thread(() =>
+{
+    lock (lockA)
+    {
+        Thread.Sleep(100); // Simulate work
+        lock (lockB)
+        {
+            Console.WriteLine("Thread 1 acquired both locks");
+        }
+    }
+});
+
+Thread t2 = new Thread(() =>
+{
+    lock (lockB    {
+        Thread.Sleep(100); // Simulate work
+        lock (lockA)
+        {
+            Console.WriteLine("Thread 2 acquired both locks");
+        }
+    }
+});
+
+t1.Start();
+t2.Start();
+object)
+
+
+
+
+
+🔐 1. lock Statement
+The lock keyword is the simplest way to ensure that only one thread can access a block of code at a time.
+1. What is Debugging?
+Debugging is the process of identifying, analyzing, and fixing bugs or errors in your code. It helps ensure your application behaves as expected.
+Why do you need to debug?
+
+To fix runtime errors or logic issues.
+To understand program flow and data states.
+To optimize performance.
+To ensure reliability before deployment.
+2. What is Tracing?
+Tracing is a way to monitor the execution of your application by recording information about its behavior. Unlike debugging, tracing is often used in production environments.
+Use cases:
+
+Logging events, errors, or warnings.
+Monitoring application health.
+Diagnosing issues without stopping the app.
+3. Debug/Trace Class Members
+In .NET, the System.Diagnostics namespace provides Debug and Trace classes.
+Common Members:
+
+Write(), WriteLine() – Output messages.
+Flush() – Clears the buffer.
+Indent, Unindent – Format output.
+Listeners – Add custom output targets (e.g., file, console).
+
+Debug.WriteLine("Debugging info");
+Trace.WriteLine("Tracing info");
+
+
+
+
+
+Debug.Assert() is a method provided by the System.Diagnostics namespace in .NET. It's used during development to verify that certain conditions are true. If the condition is false
+🔐 Web Security Basics
+1. Secure Code
+Writing code that is resistant to vulnerabilities and attacks. It involves:
+
+Input validation
+Proper error handling
+Least privilege principle
+Avoiding hardcoded secrets
+2. Common Web Vulnerabilities
+
+XSS (Cross-Site Scripting): Injecting malicious scripts into web pages.
+SQL Injection: Injecting SQL queries via input fields to manipulate databases.
+Broken Authentication & Session Management: Poor handling of login sessions can lead to unauthorized access.
+Security Misconfiguration: Default settings, unnecessary features, or outdated software.
+CSRF (Cross-Site Request Forgery): Tricks a user into performing actions they didn’t intend.
+XML Vulnerabilities: Includes XML External Entity (XXE) attacks, which exploit XML parsers.
+
+
+🔐 Authentication & Authorization in ASP.NET
+
+Authentication: Verifying who the user is (e.g., login).
+Authorization: Determining what the user can do (e.g., access control).
+ASP.NET supports:Forms Authentication
+Windows Authentication
+OAuth/OpenID Connect
+Role-based and Claims-based Authorization
+
+
+🗃️ ADO.NET Overview
+1. What is ADO.NET?
+ADO.NET is a data access technology in .NET used to interact with databases like SQL Server, Oracle, etc.
+2. Why ADO.NET?
+
+Efficient data access
+Disconnected architecture
+Integration with .NET applications
+3. Connection Architectures
+
+Connected Architecture: Uses DataReader for fast, forward-only access.
+Disconnected Architecture: Uses DataSet and DataTable for offline data manipulation.
+4. ADO.NET Class Library
+
+Connection Class: Establishes a connection to the database.
+Command Class: Executes SQL queries and stored procedures.
+DataReader Class: Reads data in a forward-only manner.
+DataAdapter Class: Bridges the gap between DataSet and the database.
+DataSet Class: Stores data in-memory in a disconnected mode.
+DataTable Class: Represents a single table in a DataSet.
+
+
+🔗 Connecting to a Database Using ADO.NET
+Example (SQL Server):
+
+
+
+🔄 Retrieving and Modifying Data
+Retrieve Data:
+
+Modify Data:
+
+🏗️ ADO.NET Architecture (Simplified)
+ADO.NET is like a bridge between your application and a database. It helps you connect, send commands, and work with data.
+
+
+🔌 1. Connection
+
+Think of this as a door to the database.
+You need to open this door to talk to the database.
+Example: SqlConnection for SQL Server.
+
+
+
+🧾 2. Command
+
+This is like a messenger that carries your instructions (SQL queries) to the database.
+You use it to retrieve, insert, update, or delete data.
+Example: SqlCommand
+
+
+
+📦 3. DataSet
+
+This is like a container that holds data in memory.
+It can store multiple tables and relationships.
+You can work with this data without staying connected to the database.
+Example: DataSet, DataTable
